@@ -97,7 +97,7 @@ export default function Home() {
           </button>
           
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-4">
-            We'll only access your calendar events to provide you with meeting insights.
+            We&apos;ll only access your calendar events to provide you with meeting insights.
           </p>
         </div>
       </div>

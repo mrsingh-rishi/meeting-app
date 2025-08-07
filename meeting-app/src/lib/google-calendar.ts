@@ -1,4 +1,4 @@
-import { google } from 'googleapis'
+import { google, calendar_v3 } from 'googleapis'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
@@ -69,8 +69,8 @@ export class GoogleCalendarService {
         orderBy: 'startTime',
       })
 
-      const upcoming = (upcomingResponse.data.items || []).map(this.transformEvent).filter(Boolean) as CalendarEvent[]
-      const past = (pastResponse.data.items || []).map(this.transformEvent).filter(Boolean) as CalendarEvent[]
+      const upcoming = (upcomingResponse.data.items || []).map((event) => this.transformEvent(event)).filter((event): event is CalendarEvent => event !== null)
+      const past = (pastResponse.data.items || []).map((event) => this.transformEvent(event)).filter((event): event is CalendarEvent => event !== null)
 
       return { upcoming, past: past.reverse() }
     } catch (error) {
@@ -79,7 +79,7 @@ export class GoogleCalendarService {
     }
   }
 
-  private static transformEvent(event: any): CalendarEvent | null {
+  private static transformEvent(event: calendar_v3.Schema$Event): CalendarEvent | null {
     if (!event.id || !event.summary || !event.start || !event.end) {
       return null
     }
@@ -88,9 +88,9 @@ export class GoogleCalendarService {
       id: event.id,
       title: event.summary,
       description: event.description || undefined,
-      startTime: new Date(event.start.dateTime || event.start.date),
-      endTime: new Date(event.end.dateTime || event.end.date),
-      attendees: (event.attendees || []).map((attendee: any) => attendee.email).filter(Boolean),
+      startTime: new Date(event.start.dateTime || event.start.date || ''),
+      endTime: new Date(event.end.dateTime || event.end.date || ''),
+      attendees: (event.attendees || []).map((attendee) => attendee.email).filter((email): email is string => Boolean(email)),
       location: event.location || undefined,
     }
   }

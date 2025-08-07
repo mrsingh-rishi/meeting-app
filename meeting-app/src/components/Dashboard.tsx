@@ -45,12 +45,12 @@ export default function Dashboard() {
       
       // Parse dates from strings
       const parsedData: MeetingsData = {
-        upcoming: data.upcoming.map((meeting: any) => ({
+        upcoming: data.upcoming.map((meeting: Meeting & { startTime: string; endTime: string }) => ({
           ...meeting,
           startTime: new Date(meeting.startTime),
           endTime: new Date(meeting.endTime),
         })),
-        past: data.past.map((meeting: any) => ({
+        past: data.past.map((meeting: Meeting & { startTime: string; endTime: string }) => ({
           ...meeting,
           startTime: new Date(meeting.startTime),
           endTime: new Date(meeting.endTime),

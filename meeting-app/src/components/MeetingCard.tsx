@@ -21,7 +21,6 @@ export default function MeetingCard({ meeting, isPast = false }: MeetingCardProp
     title,
     description,
     startTime,
-    endTime,
     attendees,
     location,
     duration,

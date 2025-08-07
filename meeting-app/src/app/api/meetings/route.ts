@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { GoogleCalendarService } from '@/lib/google-calendar'
@@ -75,7 +75,17 @@ export async function GET() {
   }
 }
 
-async function upsertMeeting(event: any, userId: string) {
+interface CalendarEvent {
+  id: string
+  title: string
+  description?: string
+  startTime: Date
+  endTime: Date
+  attendees: string[]
+  location?: string
+}
+
+async function upsertMeeting(event: CalendarEvent, userId: string) {
   return await prisma.meeting.upsert({
     where: { googleId: event.id },
     update: {
