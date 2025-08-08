@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-    async jwt({ token, account, user }) {
+    async jwt({ token, account }) {
       // Save the access token to the JWT when we first get it
       if (account) {
         token.accessToken = account.access_token

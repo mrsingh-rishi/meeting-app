@@ -1,7 +1,6 @@
 import { google, calendar_v3 } from 'googleapis'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { prisma } from '@/lib/prisma'
 
 export interface CalendarEvent {
   id: string
