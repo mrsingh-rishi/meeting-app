@@ -1,6 +1,13 @@
 import { NextAuthOptions } from "next-auth"
 import GoogleProvider from "next-auth/providers/google"
 
+// Extend the built-in session type
+declare module "next-auth" {
+  interface Session {
+    accessToken?: string
+  }
+}
+
 export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
@@ -32,7 +39,7 @@ export const authOptions: NextAuthOptions = {
       if (session?.user && token.sub) {
         session.user.id = token.sub
         // Add access token to session for API routes
-        ;(session as any).accessToken = token.accessToken
+        session.accessToken = token.accessToken as string
       }
       return session
     },

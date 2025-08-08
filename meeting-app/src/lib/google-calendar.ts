@@ -1,6 +1,12 @@
 import { google, calendar_v3 } from 'googleapis'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
+import type { Session } from 'next-auth'
+
+// Extend the session type locally if not already done
+interface ExtendedSession extends Session {
+  accessToken?: string
+}
 
 export interface CalendarEvent {
   id: string
@@ -14,7 +20,7 @@ export interface CalendarEvent {
 
 export class GoogleCalendarService {
   private static async getOAuth2Client() {
-    const session = await getServerSession(authOptions) as any
+    const session = await getServerSession(authOptions) as ExtendedSession | null
     if (!session?.user?.id) {
       throw new Error('User not authenticated')
     }
