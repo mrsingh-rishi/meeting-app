@@ -19,7 +19,7 @@ export async function GET() {
     // Store meetings in database and generate summaries for past meetings
     const upcomingMeetings = await Promise.all(
       upcoming.map(async (event) => {
-        const meeting = await upsertMeeting(event, session.user.id)
+        const meeting = await upsertMeeting(event, session.user.id || session.user.email!)
         return {
           ...meeting,
           duration: calculateDuration(meeting.startTime, meeting.endTime),
@@ -30,7 +30,7 @@ export async function GET() {
 
     const pastMeetings = await Promise.all(
       past.map(async (event) => {
-        const meeting = await upsertMeeting(event, session.user.id)
+        const meeting = await upsertMeeting(event, session.user.id || session.user.email!)
         
         // Check if we already have a summary
         let existingSummary = await prisma.summary.findFirst({
@@ -67,6 +67,7 @@ export async function GET() {
     })
 
   } catch (error) {
+    console.log(error);
     console.error('Error fetching meetings:', error)
     return NextResponse.json(
       { error: 'Failed to fetch meetings' }, 

@@ -15,20 +15,13 @@ export interface CalendarEvent {
 
 export class GoogleCalendarService {
   private static async getOAuth2Client() {
-    const session = await getServerSession(authOptions)
+    const session = await getServerSession(authOptions) as any
     if (!session?.user?.id) {
       throw new Error('User not authenticated')
     }
 
-    const account = await prisma.account.findFirst({
-      where: {
-        userId: session.user.id,
-        provider: 'google',
-      },
-    })
-
-    if (!account?.access_token) {
-      throw new Error('No Google access token found')
+    if (!session.accessToken) {
+      throw new Error('No Google access token found. Please sign out and sign in again.')
     }
 
     const oauth2Client = new google.auth.OAuth2(
@@ -37,8 +30,7 @@ export class GoogleCalendarService {
     )
 
     oauth2Client.setCredentials({
-      access_token: account.access_token,
-      refresh_token: account.refresh_token,
+      access_token: session.accessToken,
     })
 
     return oauth2Client
