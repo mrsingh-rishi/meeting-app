@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
-import { GoogleCalendarService } from '@/lib/google-calendar'
+import { MCPGoogleCalendarService, type CalendarEvent as MCPCalendarEvent } from '@/lib/mcp-google-calendar'
 import { OpenAIService } from '@/lib/openai'
 import { prisma } from '@/lib/prisma'
 
@@ -13,12 +13,12 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Fetch events from Google Calendar
-    const { upcoming, past } = await GoogleCalendarService.getEvents()
+    // Fetch events from Google Calendar via MCP
+    const { upcoming, past } = await MCPGoogleCalendarService.getEvents()
 
     // Store meetings in database and generate summaries for past meetings
     const upcomingMeetings = await Promise.all(
-      upcoming.map(async (event) => {
+      upcoming.map(async (event: MCPCalendarEvent) => {
         const meeting = await upsertMeeting(event, session.user.id || session.user.email!)
         return {
           ...meeting,
@@ -29,7 +29,7 @@ export async function GET() {
     )
 
     const pastMeetings = await Promise.all(
-      past.map(async (event) => {
+      past.map(async (event: MCPCalendarEvent) => {
         const meeting = await upsertMeeting(event, session.user.id || session.user.email!)
         
         // Check if we already have a summary

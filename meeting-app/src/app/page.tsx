@@ -46,7 +46,8 @@ export default function Home() {
         <div className="grid grid-cols-2 gap-4 mb-8">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
             <Calendar className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-            <p className="text-sm font-medium text-gray-900 dark:text-white">Calendar Sync</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-white">MCP Calendar</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Model Context Protocol</p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4 text-center border border-gray-200 dark:border-gray-700">
             <Brain className="h-6 w-6 text-purple-600 mx-auto mb-2" />
